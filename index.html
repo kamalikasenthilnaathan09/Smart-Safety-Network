@@ -1,0 +1,1649 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Smart Safety Network — personal safety platform with SOS alerts, GPS tracking, and Tamil voice assistance." />
+  <meta name="theme-color" content="#141e30" />
+  <title>Smart Safety Network</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Orbitron:wght@500;700&display=swap" rel="stylesheet" />
+
+  <style>
+    /* ============================================================
+       CSS Variables — consistent theme tokens
+       ============================================================ */
+    :root {
+      --cyan: #00e5ff;
+      --cyan-glow: rgba(0, 229, 255, 0.7);
+      --cyan-soft: rgba(0, 229, 255, 0.12);
+      --red: #ff1e4b;
+      --red-soft: rgba(255, 30, 75, 0.7);
+      --green: #98ff98;
+      --glass-bg: rgba(255, 255, 255, 0.1);
+      --glass-border: rgba(255, 255, 255, 0.18);
+      --glass-blur: 14px;
+      --sidebar-bg: rgba(7, 18, 28, 0.94);
+      --text-primary: #ffffff;
+      --text-muted: #d9d9d9;
+      --text-heading: #dffcff;
+      --shadow-card: 0 8px 32px rgba(0, 0, 0, 0.18);
+      --shadow-glow: 0 0 25px rgba(0, 229, 255, 0.35);
+      --radius-sm: 12px;
+      --radius-md: 18px;
+      --radius-lg: 22px;
+      --transition: 0.25s ease;
+      --font-body: 'Poppins', system-ui, -apple-system, sans-serif;
+      --font-display: 'Orbitron', 'Poppins', sans-serif;
+    }
+
+    /* ============================================================
+       Reset & Base
+       ============================================================ */
+    *,
+    *::before,
+    *::after {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: var(--font-body);
+      background: linear-gradient(-45deg, #141e30, #243b55, #ff416c, #00e5ff);
+      background-size: 400% 400%;
+      animation: bgShift 12s ease infinite;
+      color: var(--text-primary);
+      min-height: 100vh;
+      overflow-x: hidden;
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    @keyframes bgShift {
+      0%   { background-position: 0% 50%; }
+      50%  { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    /* Skip link for keyboard users */
+    .skip-link {
+      position: absolute;
+      top: -100px;
+      left: 16px;
+      z-index: 2000;
+      padding: 10px 18px;
+      background: var(--cyan);
+      color: #001820;
+      font-weight: 700;
+      border-radius: var(--radius-sm);
+      transition: top var(--transition);
+    }
+
+    .skip-link:focus {
+      top: 16px;
+    }
+
+    /* ============================================================
+       Shared Components — Buttons, Inputs, Cards
+       ============================================================ */
+    .btn {
+      width: 100%;
+      padding: 13px 16px;
+      border: none;
+      border-radius: var(--radius-sm);
+      background: var(--cyan);
+      color: #001820;
+      font-family: inherit;
+      font-weight: 700;
+      font-size: 15px;
+      cursor: pointer;
+      transition: transform var(--transition), box-shadow var(--transition), background var(--transition);
+      margin-top: 10px;
+    }
+
+    .btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 0 18px var(--cyan-glow);
+    }
+
+    .btn:active {
+      transform: translateY(0);
+    }
+
+    .btn:focus-visible,
+    .menu-item:focus-visible,
+    .eye-btn:focus-visible,
+    input:focus-visible {
+      outline: 2px solid var(--cyan);
+      outline-offset: 2px;
+    }
+
+    .btn.secondary {
+      background: rgba(255, 255, 255, 0.15);
+      color: var(--text-primary);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+    }
+
+    .btn.secondary:hover {
+      background: rgba(255, 255, 255, 0.22);
+      box-shadow: 0 0 14px rgba(255, 255, 255, 0.15);
+    }
+
+    .btn.red {
+      background: #ff2e63;
+      color: white;
+    }
+
+    .btn.red:hover {
+      box-shadow: 0 0 18px rgba(255, 46, 99, 0.6);
+    }
+
+    .btn.small {
+      width: auto;
+      padding: 8px 16px;
+      margin-top: 0;
+      font-size: 13px;
+    }
+
+    input {
+      width: 100%;
+      padding: 13px 14px;
+      border: 1px solid transparent;
+      outline: none;
+      border-radius: var(--radius-sm);
+      margin: 10px 0;
+      background: rgba(0, 0, 0, 0.28);
+      color: var(--text-primary);
+      font-family: inherit;
+      font-size: 15px;
+      transition: border-color var(--transition), background var(--transition);
+    }
+
+    input:focus {
+      border-color: rgba(0, 229, 255, 0.45);
+      background: rgba(0, 0, 0, 0.38);
+    }
+
+    input::placeholder {
+      color: var(--text-muted);
+    }
+
+    .card {
+      background: var(--glass-bg);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      backdrop-filter: blur(var(--glass-blur));
+      -webkit-backdrop-filter: blur(var(--glass-blur));
+      padding: 22px;
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-card);
+      transition: transform var(--transition), box-shadow var(--transition);
+    }
+
+    .card:hover {
+      box-shadow: 0 12px 36px rgba(0, 0, 0, 0.22);
+    }
+
+    .card h3 {
+      margin-bottom: 14px;
+      color: var(--text-heading);
+      font-weight: 600;
+      font-size: 1.05rem;
+    }
+
+    .card-spaced {
+      margin-top: 18px;
+    }
+
+    /* ============================================================
+       Login Page
+       ============================================================ */
+    #loginPage {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 24px 20px;
+    }
+
+    .logo-main {
+      font-family: var(--font-display);
+      font-size: clamp(1.6rem, 5vw, 2.625rem);
+      text-align: center;
+      color: var(--cyan);
+      text-shadow: 0 0 20px rgba(0, 229, 255, 0.9);
+      margin-bottom: 28px;
+      letter-spacing: 2px;
+    }
+
+    .login-box {
+      width: 100%;
+      max-width: 380px;
+      background: var(--glass-bg);
+      backdrop-filter: blur(var(--glass-blur));
+      -webkit-backdrop-filter: blur(var(--glass-blur));
+      padding: 32px 28px;
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-glow);
+      border: 1px solid var(--glass-border);
+    }
+
+    .login-box h2 {
+      text-align: center;
+      margin-bottom: 20px;
+      font-weight: 600;
+    }
+
+    .password-box {
+      position: relative;
+    }
+
+    .eye-btn {
+      position: absolute;
+      right: 8px;
+      top: 50%;
+      transform: translateY(-50%);
+      cursor: pointer;
+      font-size: 18px;
+      color: var(--cyan);
+      user-select: none;
+      background: transparent;
+      border: none;
+      padding: 6px 8px;
+      border-radius: 8px;
+      line-height: 1;
+    }
+
+    #error {
+      min-height: 22px;
+      color: #ffd3d3;
+      text-align: center;
+      font-size: 14px;
+      margin-top: 6px;
+    }
+
+    #error:not(:empty) {
+      animation: shake 0.4s ease;
+    }
+
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      25%      { transform: translateX(-4px); }
+      75%      { transform: translateX(4px); }
+    }
+
+    /* ============================================================
+       Main App Layout
+       ============================================================ */
+    #mainApp {
+      display: none;
+      min-height: 100vh;
+    }
+
+    .sidebar {
+      width: 250px;
+      min-height: 100vh;
+      background: var(--sidebar-bg);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-right: 1px solid rgba(255, 255, 255, 0.08);
+      padding: 20px 0;
+      position: sticky;
+      top: 0;
+      align-self: flex-start;
+      max-height: 100vh;
+      overflow-y: auto;
+    }
+
+    .side-title {
+      font-family: var(--font-display);
+      color: var(--cyan);
+      text-align: center;
+      padding: 0 14px 18px;
+      font-size: 20px;
+      text-shadow: 0 0 10px rgba(0, 229, 255, 0.7);
+      letter-spacing: 1px;
+    }
+
+    .menu-item {
+      display: block;
+      width: 100%;
+      text-align: left;
+      padding: 14px 18px;
+      cursor: pointer;
+      transition: background var(--transition), color var(--transition), border-color var(--transition);
+      font-size: 15px;
+      font-family: inherit;
+      color: inherit;
+      background: transparent;
+      border: none;
+      border-left: 4px solid transparent;
+    }
+
+    .menu-item:hover {
+      background: rgba(0, 229, 255, 0.08);
+      color: var(--cyan);
+      border-left-color: var(--cyan);
+    }
+
+    .menu-item.active {
+      background: var(--cyan-soft);
+      color: var(--cyan);
+      border-left-color: var(--cyan);
+      text-shadow: 0 0 8px rgba(0, 229, 255, 0.7);
+    }
+
+    .content {
+      flex: 1;
+      padding: 24px;
+      min-width: 0;
+    }
+
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 14px;
+      flex-wrap: wrap;
+      margin-bottom: 22px;
+    }
+
+    .welcome {
+      font-size: clamp(1.25rem, 3vw, 1.625rem);
+      font-weight: 700;
+    }
+
+    .timebox {
+      background: var(--glass-bg);
+      padding: 10px 16px;
+      border-radius: var(--radius-sm);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      font-size: 14px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    /* ============================================================
+       Sections & Grid
+       ============================================================ */
+    .section {
+      display: none;
+      animation: fadeIn 0.35s ease;
+    }
+
+    .section.active {
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .page-title {
+      font-size: clamp(1.5rem, 4vw, 2.125rem);
+      margin-bottom: 18px;
+      font-weight: 700;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr));
+      gap: 18px;
+    }
+
+    .action-buttons {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .action-buttons .btn {
+      width: auto;
+      flex: 1 1 140px;
+      margin-top: 0;
+    }
+
+    /* ============================================================
+       Emergency Controls & SOS
+       ============================================================ */
+    #sos {
+      background: var(--red);
+      color: white;
+      animation: sosPulse 1.5s infinite;
+      position: relative;
+      overflow: hidden;
+    }
+
+    #sos.sos-active {
+      animation: sosPulse 0.8s infinite, sosFlash 0.4s ease;
+    }
+
+    @keyframes sosPulse {
+      0%   { box-shadow: 0 0 0 0 var(--red-soft); }
+      70%  { box-shadow: 0 0 0 16px rgba(255, 30, 75, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(255, 30, 75, 0); }
+    }
+
+    @keyframes sosFlash {
+      0%   { filter: brightness(1); }
+      50%  { filter: brightness(1.35); }
+      100% { filter: brightness(1); }
+    }
+
+    .status-text {
+      margin-top: 14px;
+      font-weight: 700;
+      font-size: 18px;
+      color: var(--green);
+      transition: color 0.3s ease;
+    }
+
+    .status-text.alert {
+      color: #ff8080;
+      animation: alertPulse 1s ease infinite alternate;
+    }
+
+    @keyframes alertPulse {
+      from { opacity: 1; }
+      to   { opacity: 0.75; }
+    }
+
+    /* ============================================================
+       Location & Map
+       ============================================================ */
+    .location-text {
+      font-size: 16px;
+      line-height: 1.6;
+      margin-bottom: 10px;
+      word-break: break-word;
+    }
+
+    .location-meta {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 10px;
+      margin-top: 8px;
+    }
+
+    .accuracy-badge {
+      display: inline-block;
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-size: 12px;
+      background: rgba(0, 229, 255, 0.15);
+      color: var(--cyan);
+      border: 1px solid rgba(0, 229, 255, 0.25);
+    }
+
+    .loader-wrap {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-top: 8px;
+    }
+
+    .loader {
+      width: 32px;
+      height: 32px;
+      border: 4px solid rgba(255, 255, 255, 0.18);
+      border-top: 4px solid var(--cyan);
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      flex-shrink: 0;
+    }
+
+    .loader-text {
+      font-size: 14px;
+      color: var(--text-muted);
+    }
+
+    @keyframes spin {
+      from { transform: rotate(0deg); }
+      to   { transform: rotate(360deg); }
+    }
+
+    .map-container {
+      position: relative;
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      background: rgba(0, 0, 0, 0.25);
+      min-height: 300px;
+    }
+
+    .map-container iframe {
+      width: 100%;
+      height: 320px;
+      border: none;
+      display: block;
+      background: #fff;
+    }
+
+    .map-placeholder {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      color: var(--text-muted);
+      font-size: 14px;
+      pointer-events: none;
+    }
+
+    .map-container.has-map .map-placeholder {
+      display: none;
+    }
+
+    /* ============================================================
+       FAQ & Contacts
+       ============================================================ */
+    .contact {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      padding: 14px 16px;
+      border-radius: var(--radius-sm);
+      background: rgba(0, 0, 0, 0.22);
+      margin-bottom: 10px;
+      transition: background var(--transition);
+    }
+
+    .contact:hover {
+      background: rgba(0, 0, 0, 0.32);
+    }
+
+    .contact strong {
+      color: var(--text-heading);
+    }
+
+    .contact span {
+      font-weight: 600;
+      color: var(--cyan);
+      font-size: 1.1rem;
+    }
+
+    .faq-item {
+      margin-bottom: 14px;
+      padding: 16px;
+      background: rgba(0, 0, 0, 0.18);
+      border-radius: var(--radius-md);
+      line-height: 1.7;
+      transition: background var(--transition);
+    }
+
+    .faq-item:hover {
+      background: rgba(0, 0, 0, 0.26);
+    }
+
+    .faq-item b {
+      color: var(--text-heading);
+      display: block;
+      margin-bottom: 4px;
+    }
+
+    .about-text {
+      line-height: 1.9;
+    }
+
+    /* ============================================================
+       Voice Assistant
+       ============================================================ */
+    .voice-box {
+      position: fixed;
+      bottom: 18px;
+      right: 18px;
+      width: min(340px, calc(100vw - 36px));
+      background: rgba(10, 20, 30, 0.95);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: var(--radius-md);
+      padding: 18px;
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
+      z-index: 999;
+      transition: transform var(--transition), box-shadow var(--transition);
+    }
+
+    .voice-box:hover {
+      box-shadow: 0 16px 48px rgba(0, 0, 0, 0.45);
+    }
+
+    .voice-box h3 {
+      font-size: 18px;
+      margin-bottom: 10px;
+      color: var(--cyan);
+    }
+
+    .voice-status {
+      font-size: 14px;
+      color: #d9faff;
+      margin-bottom: 12px;
+      min-height: 22px;
+      padding: 6px 10px;
+      background: rgba(0, 0, 0, 0.2);
+      border-radius: 8px;
+      line-height: 1.4;
+    }
+
+    .voice-status.listening {
+      border-left: 3px solid var(--cyan);
+      animation: listenGlow 1.2s ease infinite alternate;
+    }
+
+    @keyframes listenGlow {
+      from { background: rgba(0, 229, 255, 0.08); }
+      to   { background: rgba(0, 229, 255, 0.18); }
+    }
+
+    .voice-buttons {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .voice-buttons button {
+      flex: 1 1 120px;
+      padding: 10px 12px;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      font-family: inherit;
+      font-weight: 600;
+      font-size: 14px;
+      transition: transform var(--transition), box-shadow var(--transition);
+    }
+
+    .voice-buttons button:hover {
+      transform: translateY(-1px);
+    }
+
+    .voice-buttons button:focus-visible {
+      outline: 2px solid var(--cyan);
+      outline-offset: 2px;
+    }
+
+    .voice-buttons .listen  { background: var(--cyan); color: #00212a; }
+    .voice-buttons .speak   { background: #20df7f; color: #052616; }
+    .voice-buttons .stop    { background: #ff6b6b; color: white; }
+    .voice-buttons .tips    { background: #ffc857; color: #2a1d00; }
+
+    .small {
+      font-size: 13px;
+      opacity: 0.88;
+      line-height: 1.55;
+      margin-top: 12px;
+    }
+
+    /* ============================================================
+       Popups & Overlay
+       ============================================================ */
+    .overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.55);
+      backdrop-filter: blur(4px);
+      -webkit-backdrop-filter: blur(4px);
+      z-index: 1000;
+      display: none;
+      animation: overlayIn 0.2s ease;
+    }
+
+    .overlay.visible {
+      display: block;
+    }
+
+    @keyframes overlayIn {
+      from { opacity: 0; }
+      to   { opacity: 1; }
+    }
+
+    .popup {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%) scale(0.95);
+      width: min(90vw, 380px);
+      background: #101820;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: var(--radius-md);
+      padding: 24px;
+      display: none;
+      z-index: 1001;
+      box-shadow: 0 16px 48px rgba(0, 0, 0, 0.45);
+      text-align: center;
+      opacity: 0;
+      transition: opacity 0.2s ease, transform 0.2s ease;
+    }
+
+    .popup.visible {
+      display: block;
+      opacity: 1;
+      transform: translate(-50%, -50%) scale(1);
+    }
+
+    .popup h3 {
+      margin-bottom: 14px;
+      color: var(--cyan);
+      font-size: 1.2rem;
+    }
+
+    .popup .btn {
+      margin-top: 8px;
+    }
+
+    .popup-actions {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    /* ============================================================
+       Responsive & Accessibility
+       ============================================================ */
+    @media (max-width: 900px) {
+      #mainApp {
+        flex-direction: column;
+      }
+
+      .sidebar {
+        width: 100%;
+        min-height: auto;
+        position: relative;
+        max-height: none;
+        padding: 12px 0;
+      }
+
+      .sidebar nav {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 4px;
+        padding: 0 8px;
+      }
+
+      .menu-item {
+        flex: 1 1 auto;
+        border-left: none;
+        border-bottom: 3px solid transparent;
+        border-radius: var(--radius-sm);
+        padding: 10px 12px;
+        font-size: 13px;
+        text-align: center;
+      }
+
+      .menu-item:hover,
+      .menu-item.active {
+        border-left-color: transparent;
+        border-bottom-color: var(--cyan);
+      }
+
+      .content {
+        padding: 18px 16px;
+      }
+
+      .voice-box {
+        position: static;
+        width: 100%;
+        margin: 18px auto 0;
+      }
+
+      .map-container iframe {
+        height: 260px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .login-box {
+        padding: 24px 20px;
+      }
+
+      .action-buttons .btn {
+        flex: 1 1 100%;
+      }
+
+      .topbar {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *,
+      *::before,
+      *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+      }
+
+      html {
+        scroll-behavior: auto;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <a href="#mainContent" class="skip-link">Skip to main content</a>
+
+  <!-- ===================== LOGIN PAGE ===================== -->
+  <div id="loginPage" role="main" aria-label="Login">
+    <div class="logo-main" aria-hidden="true">🚨 SMART SAFETY NETWORK</div>
+
+    <div class="login-box">
+      <h2 id="loginHeading">Login</h2>
+      <form id="loginForm" onsubmit="event.preventDefault(); login();" novalidate>
+        <label for="username" class="visually-hidden">Username</label>
+        <input id="username" type="text" placeholder="Username" autocomplete="username" aria-required="true" aria-describedby="error" />
+
+        <div class="password-box">
+          <label for="password" class="visually-hidden">Password</label>
+          <input id="password" type="password" placeholder="Password" autocomplete="current-password" aria-required="true" />
+          <button type="button" class="eye-btn" onclick="togglePassword()" aria-label="Toggle password visibility">👁️</button>
+        </div>
+
+        <div id="error" role="alert" aria-live="polite"></div>
+        <button type="submit" class="btn">Login</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Visually hidden labels helper (screen readers only) -->
+  <style>
+    .visually-hidden {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
+  </style>
+
+  <!-- ===================== MAIN APP ===================== -->
+  <div id="mainApp" aria-hidden="true">
+    <aside class="sidebar" aria-label="Navigation sidebar">
+      <div class="side-title">SAFE NET</div>
+      <nav aria-label="Main menu">
+        <button class="menu-item active" data-section="home" onclick="openSection('home', this)">🏠 Home</button>
+        <button class="menu-item" data-section="about" onclick="openSection('about', this)">ℹ️ About</button>
+        <button class="menu-item" data-section="faq" onclick="openSection('faq', this)">❓ FAQ</button>
+        <button class="menu-item" data-section="contact" onclick="openSection('contact', this)">📞 Contact</button>
+        <button class="menu-item" onclick="openLanguage()">🌐 Language</button>
+        <button class="menu-item" onclick="infoPopup('🟢 System monitoring active')">🟢 Status</button>
+        <button class="menu-item" onclick="infoPopup('📡 GPS tracking enabled')">📡 GPS</button>
+        <button class="menu-item" onclick="infoPopup('🚨 Emergency alerts ready')">🚨 Alerts</button>
+        <button class="menu-item" onclick="logout()">🚪 Logout</button>
+      </nav>
+    </aside>
+
+    <main class="content" id="mainContent">
+      <div class="topbar">
+        <div class="welcome" id="welcomeUser">👤 Welcome</div>
+        <div class="timebox" id="timeBox" aria-live="off">⏰ Loading time...</div>
+      </div>
+
+      <!-- Home Section -->
+      <section id="home" class="section active" aria-label="Home">
+        <h1 class="page-title" id="mainTitle">🚨 Smart Safety Network</h1>
+
+        <div class="grid">
+          <div class="card">
+            <h3 id="emergencyTitle">Emergency Controls</h3>
+            <div class="action-buttons">
+              <button class="btn red" id="sos" onclick="sendSOS()" aria-label="Send SOS emergency alert">🚨 SOS</button>
+              <button class="btn" onclick="callEmergency()" aria-label="Call emergency number 112">📞 Call 112</button>
+              <button class="btn secondary" onclick="shareLocation()" aria-label="Share your location">📤 Share Location</button>
+            </div>
+            <div class="status-text" id="status" aria-live="polite">Safe</div>
+          </div>
+
+          <div class="card">
+            <h3 id="locText">📍 Live Location</h3>
+            <div class="location-text" id="location" aria-live="polite">Getting your location...</div>
+            <div id="accuracyInfo" class="accuracy-badge" style="display:none;" aria-hidden="true"></div>
+            <div class="location-meta">
+              <div id="loaderWrap" class="loader-wrap">
+                <div id="loader" class="loader" role="status" aria-label="Loading location"></div>
+                <span id="loaderText" class="loader-text">Acquiring GPS signal...</span>
+              </div>
+              <button class="btn small secondary" id="retryLocationBtn" onclick="loadLocation()" style="display:none;" aria-label="Retry getting location">🔄 Retry</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="card card-spaced">
+          <h3 id="mapTitle">Map</h3>
+          <div class="map-container" id="mapContainer">
+            <div class="map-placeholder" id="mapPlaceholder">
+              <div class="loader" aria-hidden="true"></div>
+              <span id="mapPlaceholderText">Waiting for location...</span>
+            </div>
+            <iframe id="map" title="Live Map showing your current location" loading="lazy"></iframe>
+          </div>
+        </div>
+
+        <div class="card card-spaced">
+          <h3 id="quickHelpTitle">Quick Help</h3>
+          <div class="action-buttons">
+            <button class="btn" onclick="safeSpot()">🛡️ Nearby Safe Spot</button>
+            <button class="btn secondary" onclick="helpTips()">🆘 Help Tips</button>
+            <button class="btn secondary" onclick="speakTamilHelp()">🔊 Tamil Help Voice</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- About Section -->
+      <section id="about" class="section" aria-label="About">
+        <h1 class="page-title" id="aboutTitle">ℹ️ About Smart Safety Network</h1>
+        <div class="card">
+          <p class="about-text" id="aboutText">
+            Smart Safety Network is a web-based personal safety platform designed to help users during emergency situations.
+            It provides fast access to SOS alerts, location tracking, emergency calling, safe spot search, and voice guidance.
+            The system is simple enough for students, working people, elderly users, and beginners. It supports Tamil and English,
+            making it easier for local users to understand instructions quickly. This project uses HTML, CSS, JavaScript, browser GPS,
+            speech synthesis, and map embedding to create a smart safety experience in a simple website format.
+          </p>
+        </div>
+      </section>
+
+      <!-- FAQ Section -->
+      <section id="faq" class="section" aria-label="FAQ">
+        <h1 class="page-title" id="faqTitle">❓ Frequently Asked Questions</h1>
+        <div class="card" id="faqList">
+          <div class="faq-item"><b>1. What is this website for?</b>It helps users in emergency situations using SOS, GPS, and quick actions.</div>
+          <div class="faq-item"><b>2. Does it show live location?</b>Yes, it gets your current location from the browser GPS.</div>
+          <div class="faq-item"><b>3. Can it call emergency services?</b>Yes, the Call 112 button opens the dial option on supported devices.</div>
+          <div class="faq-item"><b>4. Does it support Tamil?</b>Yes, the interface supports Tamil and includes Tamil voice assistance.</div>
+          <div class="faq-item"><b>5. Does it store my data?</b>No, this demo works in the browser and does not save data permanently.</div>
+        </div>
+      </section>
+
+      <!-- Contact Section -->
+      <section id="contact" class="section" aria-label="Emergency Contacts">
+        <h1 class="page-title" id="contactTitle">📞 Emergency Contacts</h1>
+        <div class="card">
+          <div class="contact"><strong>National Emergency</strong><span>112</span></div>
+          <div class="contact"><strong>Police</strong><span>100</span></div>
+          <div class="contact"><strong>Ambulance</strong><span>108</span></div>
+          <div class="contact"><strong>Women Helpline</strong><span>1091</span></div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- ===================== VOICE ASSISTANT ===================== -->
+  <div class="voice-box" id="voiceAssistantBox" style="display:none;" role="complementary" aria-label="Tamil Voice Assistant">
+    <h3 id="voiceBoxTitle">🎤 Tamil Voice Assistant</h3>
+    <div class="voice-status" id="voiceStatus" aria-live="polite">Assistant ready</div>
+
+    <div class="voice-buttons">
+      <button class="listen" onclick="startListening()" aria-label="Start listening for voice commands">🎙️ Listen</button>
+      <button class="speak" onclick="speakTamilHelp()" aria-label="Speak Tamil help instructions">🔊 Speak</button>
+      <button class="stop" onclick="stopSpeaking()" aria-label="Stop voice output">⏹ Stop</button>
+      <button class="tips" onclick="helpTips()" aria-label="Show help tips">💡 Tips</button>
+    </div>
+
+    <div class="small" id="voiceCommandsHint">
+      Tamil voice commands: <br>
+      "உதவி", "அவசரம்", "இடம்", "பாதுகாப்பு", "தமிழ்", "ஆங்கிலம்", "நிறுத்து"
+    </div>
+  </div>
+
+  <!-- ===================== POPUPS ===================== -->
+  <div class="overlay" id="overlay" onclick="closeAllPopups()" aria-hidden="true"></div>
+
+  <div class="popup" id="popupBox" role="dialog" aria-modal="true" aria-labelledby="popupTitle">
+    <h3 id="popupTitle">Message</h3>
+    <p id="popupText" style="line-height:1.7;"></p>
+    <button class="btn" onclick="closePopup()">Close</button>
+  </div>
+
+  <div class="popup" id="langBox" role="dialog" aria-modal="true" aria-labelledby="langBoxTitle">
+    <h3 id="langBoxTitle">Select Language</h3>
+    <div class="popup-actions">
+      <button class="btn" onclick="setLang('en')">English</button>
+      <button class="btn" onclick="setLang('ta')">தமிழ்</button>
+      <button class="btn secondary" onclick="closeLang()">Close</button>
+    </div>
+  </div>
+
+  <script>
+    /* ============================================================
+       Smart Safety Network — Application Logic
+       ============================================================ */
+
+    // --- State ---
+    let currentLat = null;
+    let currentLng = null;
+    let currentUser = "";
+    let currentLang = "en";
+    let recognition = null;
+    let locationLoaded = false;
+    let isListening = false;
+
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+
+    // --- Cached DOM references (performance) ---
+    const DOM = {};
+
+    function cacheDOM() {
+      const ids = [
+        "loginPage", "mainApp", "voiceAssistantBox", "username", "password",
+        "error", "welcomeUser", "timeBox", "mainTitle", "locText", "status",
+        "location", "loader", "loaderWrap", "loaderText", "map", "mapContainer",
+        "mapPlaceholder", "mapPlaceholderText", "accuracyInfo", "retryLocationBtn",
+        "voiceStatus", "popupBox", "popupTitle", "popupText", "langBox", "overlay",
+        "sos", "emergencyTitle", "mapTitle", "quickHelpTitle", "aboutTitle",
+        "faqTitle", "contactTitle", "voiceBoxTitle", "voiceCommandsHint", "loginHeading"
+      ];
+      ids.forEach(function(id) { DOM[id] = document.getElementById(id); });
+    }
+
+    function $(id) {
+      return DOM[id] || document.getElementById(id);
+    }
+
+    // --- Bilingual UI strings ---
+    const i18n = {
+      en: {
+        welcome: "👤 Welcome",
+        welcomeUser: "👤 Welcome, ",
+        login: "Login",
+        mainTitle: "🚨 Smart Safety Network",
+        locText: "📍 Live Location",
+        statusSafe: "Safe",
+        statusSOS: "🚨 SOS Alert Sent!",
+        voiceReady: "Assistant ready",
+        voiceSpeaking: "🔊 Voice assistant speaking...",
+        voiceStopped: "⏹ Voice stopped",
+        voiceListening: "🎙️ Listening in Tamil...",
+        voiceEnglish: "English mode selected",
+        emergencyTitle: "Emergency Controls",
+        mapTitle: "Map",
+        quickHelpTitle: "Quick Help",
+        aboutTitle: "ℹ️ About Smart Safety Network",
+        faqTitle: "❓ Frequently Asked Questions",
+        contactTitle: "📞 Emergency Contacts",
+        voiceBoxTitle: "🎤 Tamil Voice Assistant",
+        voiceCommandsHint: 'Tamil voice commands: <br>"உதவி", "அவசரம்", "இடம்", "பாதுகாப்பு", "தமிழ்", "ஆங்கிலம்", "நிறுத்து"',
+        gettingLocation: "📡 Getting your location...",
+        loaderText: "Acquiring GPS signal...",
+        mapWaiting: "Waiting for location...",
+        locationDenied: "❌ Location permission denied. Please allow location access in browser settings.",
+        locationUnavailable: "❌ Location unavailable. Check if GPS is enabled on your device.",
+        locationTimeout: "❌ Location request timed out. Try again outdoors or near a window.",
+        locationError: "❌ Unable to get location.",
+        geoNotSupported: "❌ Geolocation is not supported in this browser.",
+        locationNotReady: "Location not available yet.",
+        locationCopied: "📤 Location copied to clipboard.",
+        locationCopiedFallback: "📤 Location copied.",
+        myLocation: "My location: ",
+        helpTips: "Stay calm. Move to a safe place. Call 112. Share your location with trusted people.",
+        sosMessage: "Emergency alert sent. Move to a safe place immediately.",
+        invalidLogin: "❌ Invalid Username or Password",
+        accuracy: "Accuracy: ±",
+        meters: "m",
+        retry: "🔄 Retry"
+      },
+      ta: {
+        welcome: "👤 வரவேற்பு",
+        welcomeUser: "👤 வரவேற்பு, ",
+        login: "உள்நுழை",
+        mainTitle: "🚨 ஸ்மார்ட் பாதுகாப்பு வலை",
+        locText: "📍 நேரடி இருப்பிடம்",
+        statusSafe: "பாதுகாப்பாக உள்ளீர்கள்",
+        statusSOS: "🚨 அவசர எச்சரிக்கை அனுப்பப்பட்டது!",
+        voiceReady: "உதவியாளர் தயார்",
+        voiceSpeaking: "🔊 குரல் உதவி பேசுகிறது...",
+        voiceStopped: "⏹ குரல் நிறுத்தப்பட்டது",
+        voiceListening: "🎙️ தமிழில் கேட்கிறது...",
+        voiceEnglish: "தமிழ் உதவி செயல்பாட்டில் உள்ளது",
+        emergencyTitle: "அவசர கட்டுப்பாடுகள்",
+        mapTitle: "வரைபடம்",
+        quickHelpTitle: "விரைவு உதவி",
+        aboutTitle: "ℹ️ ஸ்மார்ட் பாதுகாப்பு வலை பற்றி",
+        faqTitle: "❓ அடிக்கடி கேட்கப்படும் கேள்விகள்",
+        contactTitle: "📞 அவசர தொடர்புகள்",
+        voiceBoxTitle: "🎤 தமிழ் குரல் உதவியாளர்",
+        voiceCommandsHint: 'தமிழ் குரல் கட்டளைகள்: <br>"உதவி", "அவசரம்", "இடம்", "பாதுகாப்பு", "தமிழ்", "ஆங்கிலம்", "நிறுத்து"',
+        gettingLocation: "📡 உங்கள் இருப்பிடத்தை பெறுகிறது...",
+        loaderText: "GPS சிக்னல் பெறப்படுகிறது...",
+        mapWaiting: "இருப்பிடத்திற்காக காத்திருக்கிறது...",
+        locationDenied: "❌ இருப்பிட அனுமதி மறுக்கப்பட்டது. உலாவி அமைப்புகளில் அனுமதியை வழங்கவும்.",
+        locationUnavailable: "❌ இருப்பிடம் கிடைக்கவில்லை. உங்கள் சாதனத்தில் GPS இயக்கப்பட்டுள்ளதா என சரிபார்க்கவும்.",
+        locationTimeout: "❌ இருப்பிட கோரிக்கை நேரம் முடிந்தது. வெளியில் அல்லது ஜன்னல் அருகில் மீண்டும் முயற்சிக்கவும்.",
+        locationError: "❌ இருப்பிடத்தை பெற முடியவில்லை.",
+        geoNotSupported: "❌ இந்த உலாவியில் Geolocation ஆதரிக்கப்படவில்லை.",
+        locationNotReady: "இடம் இன்னும் கிடைக்கவில்லை.",
+        locationCopied: "📤 இருப்பிடம் clipboard-ல் copy செய்யப்பட்டது.",
+        locationCopiedFallback: "📤 இருப்பிடம் copy செய்யப்பட்டது.",
+        myLocation: "என் இருப்பிடம்: ",
+        helpTips: "அமைதியாக இருங்கள். பாதுகாப்பான இடத்துக்குச் செல்லுங்கள். 112-ஐ அழைக்கவும். உங்கள் இருப்பிடத்தை பகிரவும்.",
+        sosMessage: "அவசர எச்சரிக்கை அனுப்பப்பட்டது. உடனே பாதுகாப்பான இடத்துக்கு செல்லுங்கள்.",
+        invalidLogin: "❌ தவறான பயனர்பெயர் அல்லது கடவுச்சொல்",
+        accuracy: "துல்லியம்: ±",
+        meters: "மீ",
+        retry: "🔄 மீண்டும்"
+      }
+    };
+
+    function t(key) {
+      return (i18n[currentLang] && i18n[currentLang][key]) || i18n.en[key] || key;
+    }
+
+    /* --- UI Helpers --- */
+
+    function showMainApp() {
+      $("loginPage").style.display = "none";
+      $("mainApp").style.display = "flex";
+      $("mainApp").setAttribute("aria-hidden", "false");
+      $("loginPage").setAttribute("aria-hidden", "true");
+      $("voiceAssistantBox").style.display = "block";
+      $("welcomeUser").textContent = t("welcomeUser") + currentUser;
+      $("error").textContent = "";
+      applyLanguageUI(false);
+      loadLocation();
+      updateClock();
+    }
+
+    function showLoginPage() {
+      $("mainApp").style.display = "none";
+      $("mainApp").setAttribute("aria-hidden", "true");
+      $("voiceAssistantBox").style.display = "none";
+      $("loginPage").style.display = "flex";
+      $("loginPage").setAttribute("aria-hidden", "false");
+      $("username").value = "";
+      $("password").value = "";
+      $("welcomeUser").textContent = t("welcome");
+    }
+
+    function applyLanguageUI(speakConfirmation) {
+      $("mainTitle").textContent = t("mainTitle");
+      $("locText").textContent = t("locText");
+      $("emergencyTitle").textContent = t("emergencyTitle");
+      $("mapTitle").textContent = t("mapTitle");
+      $("quickHelpTitle").textContent = t("quickHelpTitle");
+      $("aboutTitle").textContent = t("aboutTitle");
+      $("faqTitle").textContent = t("faqTitle");
+      $("contactTitle").textContent = t("contactTitle");
+      $("voiceBoxTitle").textContent = t("voiceBoxTitle");
+      $("voiceCommandsHint").innerHTML = t("voiceCommandsHint");
+      $("loginHeading").textContent = t("login");
+      $("retryLocationBtn").textContent = t("retry");
+
+      if (!$("status").classList.contains("alert")) {
+        $("status").textContent = t("statusSafe");
+        $("status").style.color = "#98ff98";
+      }
+
+      $("voiceStatus").textContent = t("voiceReady");
+      document.documentElement.lang = currentLang === "ta" ? "ta" : "en";
+
+      if (speakConfirmation) {
+        speakText(
+          currentLang === "ta" ? "தமிழ் மொழி தேர்வு செய்யப்பட்டது." : "English language selected.",
+          currentLang === "ta" ? "ta-IN" : "en-IN"
+        );
+      }
+    }
+
+    /* --- Authentication --- */
+
+    function checkLoginStatus() {
+      const savedLogin = localStorage.getItem("isLoggedIn");
+      const savedUser = localStorage.getItem("loggedInUser");
+      const savedLang = localStorage.getItem("preferredLang");
+
+      if (savedLang === "ta" || savedLang === "en") {
+        currentLang = savedLang;
+        applyLanguageUI(false);
+      }
+
+      if (savedLogin === "true" && savedUser) {
+        currentUser = savedUser;
+        showMainApp();
+      }
+    }
+
+    function togglePassword() {
+      const pass = $("password");
+      pass.type = pass.type === "password" ? "text" : "password";
+    }
+
+    function login() {
+      const u = $("username").value.trim();
+      const p = $("password").value.trim();
+
+      if (u === "kamalika09" && p === "09082006") {
+        currentUser = u;
+        localStorage.setItem("isLoggedIn", "true");
+        localStorage.setItem("loggedInUser", currentUser);
+        showMainApp();
+        speakText("வணக்கம். ஸ்மார்ட் பாதுகாப்பு வலையமைப்புக்கு வரவேற்கிறேன்.", "ta-IN");
+      } else {
+        $("error").textContent = t("invalidLogin");
+      }
+    }
+
+    function logout() {
+      stopSpeaking();
+
+      if (recognition) {
+        try { recognition.stop(); } catch (e) { /* already stopped */ }
+      }
+      isListening = false;
+
+      localStorage.removeItem("isLoggedIn");
+      localStorage.removeItem("loggedInUser");
+
+      currentLat = null;
+      currentLng = null;
+      locationLoaded = false;
+
+      $("status").classList.remove("alert");
+      $("status").textContent = t("statusSafe");
+      $("status").style.color = "#98ff98";
+      $("sos").classList.remove("sos-active");
+      $("map").removeAttribute("src");
+      $("mapContainer").classList.remove("has-map");
+      $("accuracyInfo").style.display = "none";
+      $("retryLocationBtn").style.display = "none";
+
+      showLoginPage();
+    }
+
+    /* --- Clock --- */
+
+    function updateClock() {
+      const now = new Date();
+      $("timeBox").textContent = "⏰ " + now.toLocaleString(currentLang === "ta" ? "ta-IN" : undefined);
+    }
+
+    /* --- Navigation --- */
+
+    function openSection(sectionId, element) {
+      document.querySelectorAll(".section").forEach(function(sec) {
+        sec.classList.remove("active");
+      });
+      document.querySelectorAll(".menu-item[data-section]").forEach(function(item) {
+        item.classList.remove("active");
+      });
+
+      const target = document.getElementById(sectionId);
+      if (target) target.classList.add("active");
+      if (element) element.classList.add("active");
+    }
+
+    /* --- Language --- */
+
+    function openLanguage() {
+      showPopup("langBox");
+    }
+
+    function closeLang() {
+      hidePopup("langBox");
+    }
+
+    function setLang(lang) {
+      currentLang = lang;
+      localStorage.setItem("preferredLang", lang);
+      applyLanguageUI(true);
+      closeLang();
+    }
+
+    /* --- Popups --- */
+
+    function showOverlay() {
+      $("overlay").classList.add("visible");
+      $("overlay").setAttribute("aria-hidden", "false");
+    }
+
+    function hideOverlay() {
+      const anyOpen = $("popupBox").classList.contains("visible") || $("langBox").classList.contains("visible");
+      if (!anyOpen) {
+        $("overlay").classList.remove("visible");
+        $("overlay").setAttribute("aria-hidden", "true");
+      }
+    }
+
+    function showPopup(id) {
+      showOverlay();
+      const popup = $(id);
+      popup.classList.add("visible");
+      popup.style.display = "block";
+    }
+
+    function hidePopup(id) {
+      const popup = $(id);
+      popup.classList.remove("visible");
+      popup.style.display = "none";
+      hideOverlay();
+    }
+
+    function infoPopup(message, title) {
+      $("popupTitle").textContent = title || "Info";
+      $("popupText").textContent = message;
+      showPopup("popupBox");
+    }
+
+    function closePopup() {
+      hidePopup("popupBox");
+    }
+
+    function closeAllPopups() {
+      closePopup();
+      closeLang();
+    }
+
+    /* --- Geolocation --- */
+
+    function setLocationLoading(isLoading) {
+      $("loaderWrap").style.display = isLoading ? "flex" : "none";
+      $("loaderText").textContent = t("loaderText");
+    }
+
+    function showLocationError(message) {
+      locationLoaded = false;
+      setLocationLoading(false);
+      $("location").textContent = message;
+      $("mapPlaceholderText").textContent = message;
+      $("retryLocationBtn").style.display = "inline-block";
+      $("accuracyInfo").style.display = "none";
+    }
+
+    function loadLocation() {
+      if (!navigator.geolocation) {
+        showLocationError(t("geoNotSupported"));
+        return;
+      }
+
+      $("location").textContent = t("gettingLocation");
+      $("mapPlaceholderText").textContent = t("mapWaiting");
+      $("retryLocationBtn").style.display = "none";
+      setLocationLoading(true);
+
+      navigator.geolocation.getCurrentPosition(
+        function(pos) {
+          currentLat = pos.coords.latitude;
+          currentLng = pos.coords.longitude;
+          locationLoaded = true;
+
+          setLocationLoading(false);
+          $("retryLocationBtn").style.display = "none";
+
+          $("location").textContent = "📍 " + currentLat.toFixed(5) + ", " + currentLng.toFixed(5);
+
+          if (pos.coords.accuracy) {
+            $("accuracyInfo").textContent = t("accuracy") + Math.round(pos.coords.accuracy) + t("meters");
+            $("accuracyInfo").style.display = "inline-block";
+          }
+
+          $("map").src = "https://maps.google.com/maps?q=" + currentLat + "," + currentLng + "&z=15&output=embed";
+          $("mapContainer").classList.add("has-map");
+        },
+        function(error) {
+          var msg;
+          if (error.code === 1)      msg = t("locationDenied");
+          else if (error.code === 2) msg = t("locationUnavailable");
+          else if (error.code === 3) msg = t("locationTimeout");
+          else                       msg = t("locationError");
+          showLocationError(msg);
+        },
+        {
+          enableHighAccuracy: true,
+          timeout: 15000,
+          maximumAge: 0
+        }
+      );
+    }
+
+    /* --- Emergency Actions --- */
+
+    function sendSOS() {
+      $("status").textContent = t("statusSOS");
+      $("status").style.color = "#ff8080";
+      $("status").classList.add("alert");
+      $("sos").classList.add("sos-active");
+
+      var message = t("sosMessage");
+      speakText(message, currentLang === "ta" ? "ta-IN" : "en-IN");
+      infoPopup(message, currentLang === "ta" ? "🚨 அவசரம்" : "🚨 Emergency");
+
+      setTimeout(function() {
+        $("sos").classList.remove("sos-active");
+      }, 3000);
+    }
+
+    function callEmergency() {
+      window.location.href = "tel:112";
+    }
+
+    async function shareLocation() {
+      if (!locationLoaded || currentLat === null || currentLng === null) {
+        infoPopup(t("locationNotReady"));
+        return;
+      }
+
+      var link = "https://maps.google.com/?q=" + currentLat + "," + currentLng;
+      var text = t("myLocation") + link;
+
+      try {
+        if (navigator.clipboard && window.isSecureContext) {
+          await navigator.clipboard.writeText(text);
+          infoPopup(t("locationCopied"));
+        } else {
+          var textArea = document.createElement("textarea");
+          textArea.value = text;
+          textArea.setAttribute("readonly", "");
+          textArea.style.position = "fixed";
+          textArea.style.opacity = "0";
+          document.body.appendChild(textArea);
+          textArea.select();
+          document.execCommand("copy");
+          document.body.removeChild(textArea);
+          infoPopup(t("locationCopiedFallback"));
+        }
+      } catch (err) {
+        infoPopup(text);
+      }
+    }
+
+    function safeSpot() {
+      if (!locationLoaded || currentLat === null || currentLng === null) {
+        infoPopup(t("locationNotReady"));
+        return;
+      }
+      window.open(
+        "https://www.google.com/maps/search/police+station+hospital/@" + currentLat + "," + currentLng + ",15z",
+        "_blank",
+        "noopener,noreferrer"
+      );
+    }
+
+    function helpTips() {
+      var msg = t("helpTips");
+      infoPopup(msg);
+      speakText(msg, currentLang === "ta" ? "ta-IN" : "en-IN");
+    }
+
+    /* --- Speech Synthesis --- */
+
+    function getVoiceForLang(langCode) {
+      if (!("speechSynthesis" in window)) return null;
+      var voices = speechSynthesis.getVoices();
+      if (langCode === "ta-IN") {
+        return voices.find(function(v) { return v.lang && v.lang.toLowerCase().includes("ta"); });
+      }
+      return voices.find(function(v) { return v.lang && v.lang.toLowerCase().includes("en-in"); }) || voices[0];
+    }
+
+    function speakText(text, langCode) {
+      if (!("speechSynthesis" in window)) return;
+
+      speechSynthesis.cancel();
+
+      var utter = new SpeechSynthesisUtterance(text);
+      utter.lang = langCode || "ta-IN";
+      utter.rate = 0.95;
+      utter.pitch = 1;
+      utter.volume = 1;
+
+      var voice = getVoiceForLang(utter.lang);
+      if (voice) utter.voice = voice;
+
+      utter.onstart = function() {
+        $("voiceStatus").textContent = t("voiceSpeaking");
+        $("voiceStatus").classList.remove("listening");
+      };
+
+      utter.onend = function() {
+        $("voiceStatus").textContent = t("voiceReady");
+      };
+
+      utter.onerror = function() {
+        $("voiceStatus").textContent = t("voiceReady");
+      };
+
+      speechSynthesis.speak(utter);
+    }
+
+    function stopSpeaking() {
+      if ("speechSynthesis" in window) {
+        speechSynthesis.cancel();
+      }
+      $("voiceStatus").textContent = t("voiceStopped");
+      $("voiceStatus").classList.remove("listening");
+    }
+
+    function speakTamilHelp() {
+      var text = "வணக்கம். இது உங்கள் ஸ்மார்ட் பாதுகாப்பு உதவியாளர். அவசர நிலை என்றால் எஸ் ஓ எஸ் பொத்தானை அழுத்துங்கள். உங்கள் இருப்பிடத்தை பகிர, ஷேர் லொகேஷன் பொத்தானை பயன்படுத்துங்கள். அருகிலுள்ள பாதுகாப்பான இடத்தை பார்க்க சேஃப் ஸ்பாட் பொத்தானை அழுத்துங்கள்.";
+      speakText(text, "ta-IN");
+    }
+
+    /* --- Speech Recognition --- */
+
+    function initRecognition() {
+      if (!SpeechRecognition) {
+        $("voiceStatus").textContent = "Voice recognition not supported in this browser";
+        return;
+      }
+
+      recognition = new SpeechRecognition();
+      recognition.lang = "ta-IN";
+      recognition.continuous = false;
+      recognition.interimResults = false;
+
+      recognition.onstart = function() {
+        isListening = true;
+        $("voiceStatus").textContent = t("voiceListening");
+        $("voiceStatus").classList.add("listening");
+      };
+
+      recognition.onresult = function(event) {
+        var transcript = event.results[0][0].transcript.toLowerCase().trim();
+        $("voiceStatus").textContent = "You said: " + transcript;
+        handleTamilCommand(transcript);
+      };
+
+      recognition.onerror = function(event) {
+        isListening = false;
+        $("voiceStatus").classList.remove("listening");
+        var errMsg = event.error === "not-allowed"
+          ? "Microphone permission denied."
+          : "Recognition error: " + event.error;
+        $("voiceStatus").textContent = errMsg;
+      };
+
+      recognition.onend = function() {
+        isListening = false;
+        $("voiceStatus").classList.remove("listening");
+        if ($("voiceStatus").textContent === t("voiceListening")) {
+          $("voiceStatus").textContent = t("voiceReady");
+        }
+      };
+    }
+
+    function startListening() {
+      if (!recognition) initRecognition();
+      if (!recognition) {
+        infoPopup("Voice recognition is not supported in this browser. Try Chrome.");
+        return;
+      }
+
+      try {
+        recognition.start();
+      } catch (e) {
+        $("voiceStatus").textContent = "Assistant already listening...";
+      }
+    }
+
+    function handleTamilCommand(command) {
+      if (command.includes("உதவி")) {
+        helpTips();
+      } else if (command.includes("அவசரம்") || command.includes("எஸ் ஓ எஸ்") || command.includes("sos")) {
+        sendSOS();
+      } else if (command.includes("இடம்") || command.includes("லொகேஷன்")) {
+        shareLocation();
+      } else if (command.includes("பாதுகாப்பு") || command.includes("சேஃப்")) {
+        safeSpot();
+      } else if (command.includes("தமிழ்")) {
+        setLang("ta");
+      } else if (command.includes("ஆங்கிலம்") || command.includes("இங்கிலீஷ்")) {
+        setLang("en");
+      } else if (command.includes("நிறுத்து") || command.includes("ஸ்டாப்")) {
+        stopSpeaking();
+      } else {
+        var msg = "கட்டளை புரியவில்லை. உதவி, அவசரம், இடம், பாதுகாப்பு என்று சொல்லுங்கள்.";
+        $("voiceStatus").textContent = msg;
+        speakText(msg, "ta-IN");
+      }
+    }
+
+    /* --- Keyboard & Init --- */
+
+    function handleKeydown(e) {
+      if (e.key === "Enter" && $("loginPage").style.display !== "none") {
+        login();
+      }
+      if (e.key === "Escape") {
+        closeAllPopups();
+      }
+    }
+
+    // Preload speech voices (Chrome loads asynchronously)
+    if ("speechSynthesis" in window) {
+      speechSynthesis.onvoiceschanged = function() { getVoiceForLang("ta-IN"); };
+      getVoiceForLang("ta-IN");
+    }
+
+    window.addEventListener("load", function() {
+      cacheDOM();
+      updateClock();
+      setInterval(updateClock, 1000);
+      initRecognition();
+      checkLoginStatus();
+    });
+
+    window.addEventListener("keydown", handleKeydown);
+  </script>
+</body>
+</html>

@@ -134,14 +134,6 @@ No installation or server is required.
 
 ---
 
-## 👩‍💻 Developed By
-
-**Y. S. Kamalika**
-
-B.Tech – Artificial Intelligence & Data Science
-
----
-
 ## ⭐ If you found this project useful
 
 Please consider giving this repository a ⭐ on GitHub!
